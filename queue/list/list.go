@@ -5,6 +5,15 @@ type Node struct {
 	value interface{}
 	next  *Node
 }
+//Get value
+func (n Node)Get()interface{}{
+	return n.value
+}
+//Next Next
+func (n Node)Next()*Node{
+	return n.next
+}
+
 
 //NewNode create one node
 func NewNode(value interface{}) *Node {

@@ -5,15 +5,16 @@ type Node struct {
 	value interface{}
 	next  *Node
 }
+
 //Get value
-func (n Node)Get()interface{}{
+func (n Node) Get() interface{} {
 	return n.value
 }
+
 //Next Next
-func (n Node)Next()*Node{
+func (n Node) Next() *Node {
 	return n.next
 }
-
 
 //NewNode create one node
 func NewNode(value interface{}) *Node {
@@ -44,6 +45,7 @@ func (q *Queue) Push(value interface{}) {
 	if q.head == nil || q.tail == nil {
 		q.head = NewNode(value)
 		q.tail = q.head
+		q.size++
 		return
 	}
 	temp := q.tail
@@ -51,7 +53,7 @@ func (q *Queue) Push(value interface{}) {
 	q.tail = temp.next
 	q.size++
 }
-func (q *Queue) Pop() *Node {
+func (q *Queue) Pop() interface{} {
 	if q.head == nil || q.tail == nil {
 		return nil
 	}
@@ -61,9 +63,9 @@ func (q *Queue) Pop() *Node {
 		q.tail = nil
 	}
 	q.size--
-	return temp
+	return temp.Get()
 }
-func (q Queue)IsEmpty()bool{
+func (q Queue) IsEmpty() bool {
 	if q.head == nil || q.tail == nil {
 		return true
 	}

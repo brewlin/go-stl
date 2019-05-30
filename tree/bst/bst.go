@@ -1,7 +1,7 @@
 package bst
 
 import "fmt"
-import "stl/queue/list"
+import "github.com/brewlin/go-stl/queue/list"
 
 type Node struct {
 	e     int

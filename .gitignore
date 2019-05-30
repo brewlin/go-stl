@@ -1,6 +1,4 @@
 *.idea
 *.vscode
 *.DS_Store
-go.mod
-go.sum
 main.go

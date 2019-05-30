@@ -54,3 +54,9 @@ func (q *Queue) Pop() *Node {
 	q.size--
 	return temp
 }
+func (q Queue)IsEmpty()bool{
+	if q.head == nil || q.tail == nil {
+		return true
+	}
+	return false
+}

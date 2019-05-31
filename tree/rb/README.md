@@ -1,8 +1,8 @@
-#REB-BLACK TREE
+# REB-BLACK TREE
 >红黑树
 
 ## struct
->结构体 的 key 是一个接口 需要提供 `Less() Mor() Equal()`等可以比较的方法，在红黑树get 和 set 的时候会进行判断
+>需要提供 `Less() Mor() Equal()`等可以比较的方法，在红黑树add, remove,get 和 set 的时候会进行判断
 ```go
 type Node struct {
 	key   component.Key
@@ -11,6 +11,13 @@ type Node struct {
 	right *Node
 	//default RED
 	color bool
+}
+type RBTree struct {
+	root  *Node
+	size  int
+	less  func(a, b interface{}) bool
+	more  func(a, b interface{}) bool
+	equal func(a, b interface{}) bool
 }
 ```
 

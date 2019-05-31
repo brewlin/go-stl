@@ -1,6 +1,9 @@
 package example
 
-import "math/rand"
+import (
+	"math/rand"
+	"time"
+)
 
 func RandInt64(min, max int64) int64 {
 	if min >= max || min == 0 || max == 0 {
@@ -17,15 +20,13 @@ func RandInt64Arr(num int) []int64 {
 }
 func RandIntArr(num, min, max int) []int {
 	arr := make([]int, num)
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for i := 0; i < num; i++ {
-		arr[i] = RandInt(min, max)
+		arr[i] = r.Intn(max - min)
 	}
 	return arr
 }
 func RandInt(min, max int) int {
-	if min >= max || min == 0 || max == 0 {
-		return max
-	}
-	return rand.Intn(max-min) + min
-
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	return r.Intn(max)
 }

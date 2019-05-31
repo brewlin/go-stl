@@ -1,4 +1,4 @@
-package bst
+package bs
 
 import "fmt"
 import "github.com/brewlin/go-stl/queue/list"
@@ -18,32 +18,32 @@ func NewNode(e int) *Node {
 	return &node
 }
 
-//Bst struct
-type Bst struct {
+//BSTree struct
+type BSTree struct {
 	root *Node
 	size int
 }
 
-//NewBst return bst
-func NewBst() *Bst {
-	var bst Bst
-	bst.root = nil
-	bst.size = 0
-	return &bst
+//NewBSTree return BSTree
+func NewBSTree() *BSTree {
+	var BSTree BSTree
+	BSTree.root = nil
+	BSTree.size = 0
+	return &BSTree
 }
 
 //Size get size
-func (b Bst) Size() int {
+func (b BSTree) Size() int {
 	return b.size
 }
 
 //IsEmpty bool
-func (b Bst) IsEmpty() bool {
+func (b BSTree) IsEmpty() bool {
 	return b.size == 0
 }
 
 //Add add
-func (b *Bst) Add(e int) {
+func (b *BSTree) Add(e int) {
 	if b.root == nil {
 		b.root = NewNode(e)
 		b.size++
@@ -53,7 +53,7 @@ func (b *Bst) Add(e int) {
 }
 
 //add node by recursive
-func (b *Bst) add(node *Node, e int) {
+func (b *BSTree) add(node *Node, e int) {
 	if node.e == e {
 		return
 	} else if e < node.e && node.left == nil {
@@ -72,10 +72,10 @@ func (b *Bst) add(node *Node, e int) {
 	}
 
 }
-func (b Bst) Contains(e int) bool {
+func (b BSTree) Contains(e int) bool {
 	return b.contains(b.root, e)
 }
-func (b Bst) contains(node *Node, e int) bool {
+func (b BSTree) contains(node *Node, e int) bool {
 	if node == nil {
 		return false
 	}
@@ -87,10 +87,10 @@ func (b Bst) contains(node *Node, e int) bool {
 		return b.contains(node.right, e)
 	}
 }
-func (b Bst) PreOrder() {
+func (b BSTree) PreOrder() {
 	b.preOrder(b.root)
 }
-func (b Bst) preOrder(node *Node) {
+func (b BSTree) preOrder(node *Node) {
 	if node == nil {
 		return
 	}
@@ -98,7 +98,7 @@ func (b Bst) preOrder(node *Node) {
 	fmt.Println(node.e)
 	b.preOrder(node.right)
 }
-func (b Bst) LevelOrder() {
+func (b BSTree) LevelOrder() {
 	queue := list.NewQueue()
 	queue.Push(b.root)
 	for !queue.IsEmpty() {
@@ -115,36 +115,36 @@ func (b Bst) LevelOrder() {
 }
 
 //mini get mini value
-func (c Bst) Mini() int {
+func (c BSTree) Mini() int {
 	if c.size == 0 {
-		panic("bst is empty")
+		panic("BSTree is empty")
 	}
 	return c.mini(c.root).e
 }
-func (c Bst) mini(node *Node) *Node {
+func (c BSTree) mini(node *Node) *Node {
 	if node.left == nil {
 		return node
 	}
 	return c.mini(node.left)
 }
-func (c Bst) Max() int {
+func (c BSTree) Max() int {
 	if c.size == 0 {
-		panic("bst is empty")
+		panic("BSTree is empty")
 	}
 	return c.max(c.root).e
 }
-func (c Bst) max(node *Node) *Node {
+func (c BSTree) max(node *Node) *Node {
 	if node.right == nil {
 		return node
 	}
 	return c.max(node.right)
 }
-func (c *Bst) RemoveMin() int {
+func (c *BSTree) RemoveMin() int {
 	ret := c.Mini()
 	c.root = c.removeMin(c.root)
 	return ret
 }
-func (c *Bst) removeMin(node *Node) *Node {
+func (c *BSTree) removeMin(node *Node) *Node {
 	if node.left == nil {
 		rightNode := node.right
 		node.right = nil
@@ -154,12 +154,12 @@ func (c *Bst) removeMin(node *Node) *Node {
 	node.left = c.removeMin(node.left)
 	return node
 }
-func (c *Bst) RemoveMax() int {
+func (c *BSTree) RemoveMax() int {
 	ret := c.Max()
 	c.root = c.removeMax(c.root)
 	return ret
 }
-func (c *Bst) removeMax(node *Node) *Node {
+func (c *BSTree) removeMax(node *Node) *Node {
 	if node.right == nil {
 		leftNode := node.left
 		node.left = nil
@@ -169,10 +169,10 @@ func (c *Bst) removeMax(node *Node) *Node {
 	node.right = c.removeMax(node.right)
 	return node
 }
-func (c *Bst) Remove(e int) {
+func (c *BSTree) Remove(e int) {
 	c.root = c.remove(c.root, e)
 }
-func (c *Bst) remove(node *Node, e int) *Node {
+func (c *BSTree) remove(node *Node, e int) *Node {
 	if node == nil {
 		return nil
 	}

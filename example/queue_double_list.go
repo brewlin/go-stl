@@ -2,8 +2,9 @@ package example
 
 import (
 	"fmt"
-	"stl/queue/list"
 	"time"
+
+	"github.com/brewlin/go-stl/queue/list"
 )
 
 func List() {

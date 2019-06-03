@@ -1,8 +1,7 @@
-package example
+package test
 
 import (
-	"fmt"
-	"time"
+	"testing"
 
 	"github.com/brewlin/go-stl/tree/rb"
 )
@@ -16,22 +15,22 @@ func More(a, b interface{}) bool {
 func Equal(a, b interface{}) bool {
 	return a.(int) == b.(int)
 }
-func RBTree(n int) {
-	// arr := RandIntArr(n, 0, n)
+func BenchmarkRBTree(bt *testing.B) {
+	// arr := RandIntArr(bt.N, 0, bt.N)
 	b := rb.NewRBTree(Less, More, Equal)
-	t1 := time.Now()
+	bt.ReportAllocs()
+	bt.ResetTimer()
 	// for _, v := range arr {
-	for i := 0; i < n; i++ {
-		// b.Add(i)
+	for i := 0; i < bt.N; i++ {
 		b.Add(i, i)
+		// b.Add(v, v)
 	}
 	// for _, v := range arr {
-	for i := 0; i < n; i++ {
+	for i := 0; i < bt.N; i++ {
 		b.Remove(i)
 	}
 	// b.Prints()
 	// fmt.Println(b.GetSize())
-	fmt.Println("red-black tree", time.Now().Sub(t1))
 	// b.PreOrder()
 	// b.LevelOrder()
 }

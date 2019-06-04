@@ -36,6 +36,11 @@ func NewList() *List {
 }
 func (l *List) Insert(key, value interface{}) {
 	node := NewNode(key, value)
+	if l.head == nil {
+		l.head = node
+		l.size++
+		return
+	}
 	temp := l.head
 	for temp.next != nil {
 		temp = temp.next
@@ -52,6 +57,9 @@ func (l List) Print() {
 	fmt.Println()
 }
 func (l List) Find(key interface{}) interface{} {
+	if l.head == nil {
+		return nil
+	}
 	temp := l.head
 	for temp.next != nil && !l.equal(temp.next.key, key) {
 		temp = temp.next

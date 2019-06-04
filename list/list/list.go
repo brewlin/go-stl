@@ -4,13 +4,13 @@ import "fmt"
 
 //Node node
 type Node struct {
-	key   int
+	key   interface{}
 	value interface{}
 	next  *Node
 }
 
 //NewNode create one node
-func NewNode(key int, value interface{}) *Node {
+func NewNode(key, value interface{}) *Node {
 	var node Node
 	node.value = value
 	node.key = key
@@ -19,8 +19,9 @@ func NewNode(key int, value interface{}) *Node {
 }
 
 type List struct {
-	head *Node
-	size int
+	head  *Node
+	size  int
+	equal func(a, b interface{}) bool
 }
 
 func (l List) GetSize() int {
@@ -29,11 +30,11 @@ func (l List) GetSize() int {
 
 func NewList() *List {
 	var list List
-	list.head = NewNode(-1, nil)
+	list.head = nil
 	list.size = 0
 	return &list
 }
-func (l *List) Insert(key int, value interface{}) {
+func (l *List) Insert(key, value interface{}) {
 	node := NewNode(key, value)
 	temp := l.head
 	for temp.next != nil {
@@ -50,25 +51,34 @@ func (l List) Print() {
 	}
 	fmt.Println()
 }
-func (l List) Find(key int) interface{} {
+func (l List) Find(key interface{}) interface{} {
 	temp := l.head
-	for temp.next != nil && temp.next.key != key {
+	for temp.next != nil && !l.equal(temp.next.key, key) {
 		temp = temp.next
 	}
-	if temp.next.key == key {
+	if l.equal(temp.next.key, key) {
 		return temp.next.value
 	}
 	return nil
 }
-func (l *List) Delete(key int) {
+func (l List) Update(key, value interface{}) {
 	temp := l.head
-	for temp.next != nil && temp.next.key != key {
+	for temp.next != nil && !l.equal(temp.next.key, key) {
+		temp = temp.next
+	}
+	if l.equal(temp.next.key, key) {
+		temp.next.value = value
+	}
+}
+func (l *List) Delete(key interface{}) {
+	temp := l.head
+	for temp.next != nil && !l.equal(temp.next.key, key) {
 		temp = temp.next
 	}
 	if temp.next == nil {
 		return
 	}
-	if temp.next.key == key {
+	if l.equal(temp.next.key, key) {
 		temp.next = temp.next.next
 	}
 

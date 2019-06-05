@@ -16,7 +16,7 @@ func NewHashList(capacity int) *HashList {
 	hash.capacity = capacity << (hash.b - 1)
 	bs := make([]*list.List, hash.capacity)
 	for i := 0; i < hash.capacity; i++ {
-		bs[i] = list.NewList()
+		bs[i] = list.NewList(equal)
 	}
 	hash.buckets = bs
 	return &hash

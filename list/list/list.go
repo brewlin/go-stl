@@ -28,10 +28,11 @@ func (l List) GetSize() int {
 	return l.size
 }
 
-func NewList() *List {
+func NewList(equal func(a, b interface{})bool) *List {
 	var list List
 	list.head = nil
 	list.size = 0
+	list.equal = equal
 	return &list
 }
 func (l *List) Insert(key, value interface{}) {
@@ -56,34 +57,41 @@ func (l List) Print() {
 	}
 	fmt.Println()
 }
-func (l List) Find(key interface{}) interface{} {
+func (l *List) Find(key interface{}) interface{} {
 	if l.head == nil {
 		return nil
 	}
 	temp := l.head
-	for temp.next != nil && !l.equal(temp.next.key, key) {
+	for temp.next != nil && !l.equal(temp.key, key) {
 		temp = temp.next
 	}
-	if l.equal(temp.next.key, key) {
-		return temp.next.value
+	if l.equal(temp.key, key) {
+		return temp.value
 	}
 	return nil
 }
 func (l List) Update(key, value interface{}) {
 	temp := l.head
-	for temp.next != nil && !l.equal(temp.next.key, key) {
+	for temp.next != nil && !l.equal(temp.key, key) {
 		temp = temp.next
 	}
-	if l.equal(temp.next.key, key) {
-		temp.next.value = value
+	if l.equal(temp.key, key) {
+		temp.value = value
 	}
 }
 func (l *List) Delete(key interface{}) {
+	if l.head == nil {
+		return
+	}
 	temp := l.head
+	if l.equal(l.head.key,key){
+		l.head = temp.next
+		return
+	}
 	for temp.next != nil && !l.equal(temp.next.key, key) {
 		temp = temp.next
 	}
-	if temp.next == nil {
+	if temp == nil || temp.next == nil {
 		return
 	}
 	if l.equal(temp.next.key, key) {

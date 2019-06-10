@@ -270,3 +270,15 @@ func (r RBTree) prints(node *Node) {
 	fmt.Printf("%d ", node.value)
 	r.prints(node.right)
 }
+func (r RBTree) KeySet() []interface{} {
+	return r.keySet(r.root, []interface{}{})
+}
+func (r RBTree) keySet(node *Node, res []interface{}) []interface{} {
+	if node == nil {
+		return res
+	}
+	res = append(res, node.key)
+	left := r.keySet(node.left, []interface{}{})
+	right := r.keySet(node.right, []interface{}{})
+	return append(append(res, left...), right...)
+}

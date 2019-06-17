@@ -1,12 +1,20 @@
 # Tree 树结构 相关的树结构实现
 
-## @bs
-> binary-search-tree 二分搜索树
+## @bs 平衡二分搜索树
+> binary-search-tree 二分搜索树[binary-search-tree](./bs)
 ```go
+import "github.com/brewlin/go-stl/tree/bs"
 bst := bs.NewBSTree()
 ```
-## @rb
-> red-black-tree 红黑树
+## @rb 红黑树
+> red-black-tree 红黑树[red-black-tree](./rb)
 ```go
+import "github.com/brewlin/go-stl/tree/rb"
+rb := rb.NewRBTree(less,more,equal)
+```
+## @sg 线段树
+>  线段树[segment-tree](./sg)
+```go
+import "github.com/brewlin/go-stl/tree/sg"
 rb := rb.NewRBTree(less,more,equal)
 ```

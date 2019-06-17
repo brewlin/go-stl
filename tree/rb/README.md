@@ -5,7 +5,7 @@
 >需要提供 `Less() Mor() Equal()`等可以比较的方法，在红黑树add, remove,get 和 set 的时候会进行判断
 ```go
 type Node struct {
-	key   component.Key
+	key   interface{}
 	value interface{}
 	left  *Node
 	right *Node

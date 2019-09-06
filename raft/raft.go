@@ -1,13 +1,34 @@
 package raft
 
+//
+// this is an outline of the API that raft must expose to
+// the service (or tester). see comments below for
+// each of these functions for more details.
+//
+// rf = Make(...)
+//   create a new Raft server.
+// rf.Start(command interface{}) (index, term, isleader)
+//   start agreement on a new log entry
+// rf.GetState() (term, isLeader)
+//   ask a Raft for its current term, and whether it thinks it is leader
+// ApplyMsg
+//   each time a new entry is committed to the log, each Raft peer
+//   should send an ApplyMsg to the service (or tester)
+//   in the same server.
+//
+
 import (
+	"log"
+	//"fmt"
+
+	"math/rand"
 	"sync"
 	"time"
-	"log"
+
+	"github.com/brewlin/go-stl/labrpc"
 )
 
 const (
-	//LEADER 主
 	LEADER = iota
 	CANDIDATE
 	FLLOWER
@@ -15,7 +36,32 @@ const (
 	HBINTERVAL = 50 * time.Millisecond // 50ms
 )
 
-func newRaft(peers []*rpc.ClientEnd,me int,persister *Persister,applyCh chan ApplyMsg)*Raft{
+//
+// as each Raft peer becomes aware that successive log entries are
+// committed, the peer should send an ApplyMsg to the service (or
+// tester) on the same server, via the applyCh passed to Make().
+//
+type ApplyMsg struct {
+	Index       int
+	Command     interface{}
+	UseSnapshot bool   // ignore for lab2; only used in lab3
+	Snapshot    []byte // ignore for lab2; only used in lab3
+}
+
+//
+// the service or tester wants to create a Raft server. the ports
+// of all the Raft servers (including this one) are in peers[]. this
+// server's port is peers[me]. all the servers' peers[] arrays
+// have the same order. persister is a place for this server to
+// save its persistent state, and also initially holds the most
+// recent saved state, if any. applyCh is a channel on which the
+// tester or service expects Raft to send ApplyMsg messages.
+// Make() must return quickly, so it should start goroutines
+// for any long-running work.
+// 每个server节点都保存着相同的peers结构体，当前节点也保存在数组perrs[me] 中，persister表示持久化当前节点最近的历史状态
+//
+func Make(peers []*labrpc.ClientEnd, me int,
+	persister *Persister, applyCh chan ApplyMsg) *Raft {
 	rf := &Raft{}
 	rf.peers = peers
 	rf.persister = persister
@@ -36,7 +82,7 @@ func newRaft(peers []*rpc.ClientEnd,me int,persister *Persister,applyCh chan App
 	rf.readPersist(persister.ReadRaftState())
 	rf.readSnapshot(persister.ReadSnapshot())
 
-	//投票选举
+	// 事件循环
 	go func() {
 		//进行事件循环
 		for {
@@ -123,18 +169,23 @@ func newRaft(peers []*rpc.ClientEnd,me int,persister *Persister,applyCh chan App
 	return rf
 }
 
-//Raft raft
+//
+// A Go object implementing a single Raft peer.
+//
 type Raft struct {
-	mu sync.Mutex
-	peers []*rpc.ClientEnd
+	mu        sync.Mutex
+	peers     []*labrpc.ClientEnd
 	persister *Persister
-	me int
-	//当前身份
-	state int 
+	me        int // index into peers[]
 
-	voteCount int
+	// Your data here.
+	// Look at the paper's Figure 2 for a description of what
+	// state a Raft server must maintain.
 
-	chanCommit chan bool
+	//channel
+	state         int
+	voteCount     int
+	chanCommit    chan bool
 	chanHeartbeat chan bool
 	chanGrantVote chan bool
 	chanLeader    chan bool
@@ -152,4 +203,63 @@ type Raft struct {
 	//volatile state on leader
 	nextIndex  []int
 	matchIndex []int
+}
+
+// return currentTerm and whether this server
+// believes it is the leader.
+func (rf *Raft) GetState() (int, bool) {
+	return rf.currentTerm, rf.state == LEADER
+}
+
+// 获取最新的一个记录索引
+func (rf *Raft) getLastIndex() int {
+	return rf.log[len(rf.log)-1].LogIndex
+}
+
+// 查询最新的任期 term
+func (rf *Raft) getLastTerm() int {
+	return rf.log[len(rf.log)-1].LogTerm
+}
+
+//判断是否是leader节点
+func (rf *Raft) IsLeader() bool {
+	return rf.state == LEADER
+}
+
+//Start d
+// the service using Raft (e.g. a k/v server) wants to start
+// agreement on the next command to be appended to Raft's log. if this
+// server isn't the leader, returns false. otherwise start the
+// agreement and return immediately. there is no guarantee that this
+// command will ever be committed to the Raft log, since the leader
+// may fail or lose an election.
+//
+// the first return value is the index that the command will appear at
+// if it's ever committed. the second return value is the current
+// term. the third return value is true if this server believes it is
+// the leader.
+//
+func (rf *Raft) Start(command interface{}) (int, int, bool) {
+	rf.mu.Lock()
+	defer rf.mu.Unlock()
+	index := -1
+	term := rf.currentTerm
+	isLeader := rf.state == LEADER
+	if isLeader {
+		index = rf.getLastIndex() + 1
+		//fmt.Printf("raft:%d start\n",rf.me)
+		rf.log = append(rf.log, LogEntry{LogTerm: term, LogCommand: command, LogIndex: index}) // append new entry from client
+		rf.persist()
+	}
+	return index, term, isLeader
+}
+
+//Kill kill
+// the tester calls Kill() when a Raft instance won't
+// be needed again. you are not required to do anything
+// in Kill(), but it might be convenient to (for example)
+// turn off debug output from this instance.
+//
+func (rf *Raft) Kill() {
+	// Your code here, if desired.
 }

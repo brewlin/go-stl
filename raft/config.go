@@ -8,7 +8,7 @@ package raft
 // test with the original before submitting.
 //
 
-import "github.com/brewlin/go-stl/labrpc"
+import "github.com/brewlin/go-stl/pkg/rpc"
 import "log"
 import "sync"
 import "testing"

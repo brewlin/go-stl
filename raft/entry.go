@@ -2,20 +2,27 @@ package raft
 
 //LogEntry logentry
 type LogEntry struct {
-	LogIndex   int
-	LogTerm    int
+	//日志索引
+	LogIndex int
+	//改命令对应的领导人任期号
+	LogTerm int
+	//可以执行的命令
 	LogCommand interface{}
 }
 
 // AppendEntriesArgs rpc心跳包，leader心跳广播所有节点
 type AppendEntriesArgs struct {
-	//该term为leader的term
+	//该term为leader的当前任期号
 	Term int
 	//全局leader唯一id
-	LeaderId     int
-	PrevLogTerm  int
+	LeaderId int
+	//最新日志之前的日志的leader任期号
+	PrevLogTerm int
+	//最新的日志之前的索引值
 	PrevLogIndex int
-	Entries      []LogEntry
+	//将要存储的日志条目
+	Entries []LogEntry
+	//leader提交的日志条目索引值
 	LeaderCommit int
 }
 
@@ -39,6 +46,7 @@ func (rf *Raft) broadcastAppendEntries() {
 	last := rf.getLastIndex()
 	baseIndex := rf.log[0].LogIndex
 	//If there exists an N such that N > commitIndex, a majority of matchIndex[i] ≥ N, and log[N].term == currentTerm: set commitIndex = N
+	//如果存在一个满足N > commitIndex和matchIndex[i] >= N并且log[N].term == currentTerm的 N，则将commitIndex赋值为 N
 	for i := rf.commitIndex + 1; i <= last; i++ {
 		num := 1
 		for j := range rf.peers {

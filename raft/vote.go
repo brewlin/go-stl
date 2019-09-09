@@ -7,8 +7,10 @@ type RequestVoteArgs struct {
 	//任期
 	Term int
 	//全局唯一候选者ID
-	CandidateId  int
-	LastLogTerm  int
+	CandidateId int
+	//候选人最新日志条目对应的任期号
+	LastLogTerm int
+	//候选人最新日志条目的索引值
 	LastLogIndex int
 }
 

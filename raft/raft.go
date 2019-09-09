@@ -25,7 +25,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/brewlin/go-stl/labrpc"
+	labrpc "github.com/brewlin/go-stl/pkg/rpc"
 )
 
 const (
@@ -201,7 +201,9 @@ type Raft struct {
 	lastApplied int
 
 	//volatile state on leader
-	nextIndex  []int
+	//对于每一个服务器，记录需要发给它的下一个日志条目的索引（初始化为领导人上一条日志条目的索引值 + 1）
+	nextIndex []int
+	//对于每一个服务器，记录已经复制到该服务器的日志的最高索引值(从0递增)
 	matchIndex []int
 }
 

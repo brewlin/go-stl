@@ -1,6 +1,7 @@
 package raft
 
 //AppendEntries append
+//????  ?leader ?????
 func (rf *Raft) AppendEntries(args AppendEntriesArgs, reply *AppendEntriesReply) {
 	// Your code here.
 	rf.mu.Lock()
@@ -8,17 +9,21 @@ func (rf *Raft) AppendEntries(args AppendEntriesArgs, reply *AppendEntriesReply)
 	defer rf.persist()
 
 	reply.Success = false
-	//Reply false if term < currentTerm
+	//???leader?? ?????????????leader?????false
 	if args.Term < rf.currentTerm {
 		reply.Term = rf.currentTerm
 		reply.NextIndex = rf.getLastIndex() + 1
 		return
 	}
+	//????????leader???????????????
 	rf.chanHeartbeat <- true
 	//If RPC request or response contains term T > currentTerm: set currentTerm = T, convert to follower
+	//????????????????leader???
+	//?? ?leader?? ??????????????????????FLLOWER??
 	if args.Term > rf.currentTerm {
 		rf.currentTerm = args.Term
 		rf.state = FLLOWER
+		//?????
 		rf.votedFor = -1
 	}
 	reply.Term = args.Term
@@ -34,6 +39,7 @@ func (rf *Raft) AppendEntries(args AppendEntriesArgs, reply *AppendEntriesReply)
 	// Af- ter a rejection, the leader decrements nextIndex and retries the AppendEntries RPC
 	//Eventually nextIndex will reach a point where the leader and follower logs match
 	//which removes any conflicting entries in the follower’s log and appends entries from the leader’s log (if any).
+	//??????
 	if args.PrevLogIndex > baseIndex {
 		term := rf.log[args.PrevLogIndex-baseIndex].LogTerm
 		if args.PrevLogTerm != term {

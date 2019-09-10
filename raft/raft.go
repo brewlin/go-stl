@@ -134,6 +134,7 @@ func Make(peers []*labrpc.ClientEnd, me int,
 					//切换为leader身份
 					rf.state = LEADER
 					log.Printf("%v is Leader\n", rf.me)
+					//这里会维护每一个节点的最新的日志索引
 					rf.nextIndex = make([]int, len(rf.peers))
 					rf.matchIndex = make([]int, len(rf.peers))
 					for i := range rf.peers {
@@ -218,7 +219,7 @@ func (rf *Raft) getLastIndex() int {
 	return rf.log[len(rf.log)-1].LogIndex
 }
 
-// 查询最新的任期 term
+// 查询最新的日志所对应的任期 term
 func (rf *Raft) getLastTerm() int {
 	return rf.log[len(rf.log)-1].LogTerm
 }

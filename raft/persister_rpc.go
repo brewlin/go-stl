@@ -6,29 +6,38 @@ import (
 )
 
 type InstallSnapshotArgs struct {
-	Term              int
-	LeaderId          int
+	Term     int
+	LeaderId int
+	//快照中最后的日志条目对应的索引
 	LastIncludedIndex int
-	LastIncludedTerm  int
-	Data              []byte
+	//快照中最后的日志条目对应的任期
+	LastIncludedTerm int
+	//快照原始数据
+	Data []byte
 }
 
 type InstallSnapshotReply struct {
+	//用于leader更新自己
 	Term int
 }
 
+/**
+ * server 节点根据快照更新自己的日志
+ * 处理 leader节点发送的快照 rpc (可能当前节点的快照太落后了)
+ */
 func (rf *Raft) InstallSnapshot(args InstallSnapshotArgs, reply *InstallSnapshotReply) {
-	// Your code here.
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
+	//当前任期比该leader节点大
 	if args.Term < rf.currentTerm {
 		reply.Term = rf.currentTerm
 		return
 	}
+	//收到心跳,重置定时器
 	rf.chanHeartbeat <- true
 	rf.state = FLLOWER
 	rf.currentTerm = rf.currentTerm
-
+	//持久化保存leader发送的快照
 	rf.persister.SaveSnapshot(args.Data)
 
 	rf.log = truncateLog(args.LastIncludedIndex, args.LastIncludedTerm, rf.log)

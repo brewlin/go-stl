@@ -26,3 +26,9 @@
 
 ## @raft
 > [raft](./raft)分布式一致性协议
+
+- [raft 节点](./raft/flag.md)
+
+## @mr => mapreduce
+- [mr](./cmd/)
+计算框架

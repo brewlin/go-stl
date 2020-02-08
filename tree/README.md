@@ -18,3 +18,11 @@ rb := rb.NewRBTree(less,more,equal)
 import "github.com/brewlin/go-stl/tree/sg"
 rb := rb.NewRBTree(less,more,equal)
 ```
+## @bm b-树
+> b树&b-树[b-minus-tree](./bm)
+```go
+import(
+    "github.com/brewlin/go-stl/tree/bm"
+)
+b := bm.NewBMTree(4)//传入树的阶乘，表示几阶b树
+```

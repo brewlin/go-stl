@@ -14,7 +14,14 @@ func NewBMTree(m int) *BMTree {
 	b.root = NewBMNode(m)
 	return &b
 }
-func (b *BMTree) Search(v int) (bool, int, *BMNode) {
+func (b *BMTree) Search(v int) bool {
+	isexist, _, _ := b.search(v)
+	if isexist {
+		return true
+	}
+	return false
+}
+func (b *BMTree) search(v int) (bool, int, *BMNode) {
 	n := NewBMNode(b.m)
 	var i int
 
@@ -38,7 +45,7 @@ func (b *BMTree) Search(v int) (bool, int, *BMNode) {
 
 func (b *BMTree) Insert(v int) *BMNode {
 	var i int
-	ok, _, node := b.Search(v)
+	ok, _, node := b.search(v)
 	if !ok {
 		node.key[0] = v
 		for i = node.size; i > 0 && v < node.key[i]; i-- {
@@ -60,7 +67,7 @@ func (b *BMTree) Insert(v int) *BMNode {
 	return b.root
 }
 func (b *BMTree) Delete(v int) *BMTree {
-	ok, i, node := b.Search(v)
+	ok, i, node := b.search(v)
 	if ok {
 		b.root = node.deleteNode(v, i, b.m)
 	}

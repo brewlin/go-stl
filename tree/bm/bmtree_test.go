@@ -28,7 +28,19 @@ func TestBMTreeDelete(t *testing.T) {
 	newTree.Insert(44)
 
 	newTree.Delete(44)
+	newTree.Delete(43)
 	if newTree.Search(44) {
 		t.Error("delete error")
+	}
+}
+func BenchmarkBMTree(bt *testing.B) {
+	b := bm.NewBMTree(10)
+	bt.ReportAllocs()
+	bt.ResetTimer()
+	for i := 1; i < bt.N; i++ {
+		b.Insert(i)
+	}
+	for i := 1; i < bt.N; i++ {
+		b.Delete(i)
 	}
 }
